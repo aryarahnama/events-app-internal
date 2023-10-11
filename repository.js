@@ -27,8 +27,8 @@ async function getConnection(db) {
 // mock events data - Once deployed the data will come from database
 const mockEvents = {
     events: [
-        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, datetime_added: '2022-02-01:12:00' },
-        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, datetime_added: '2022-02-01:12:00' },
+        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, date: '2022-02-01', time: "12:04", datetime_added: '2022-02-01:12:00' },
+        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, date: '2022-02-03', time: "11:11", datetime_added: '2022-02-01:12:00' },
     ]
 };
 
@@ -48,6 +48,7 @@ async function getEvents(db = mariadb) {
                         description: row.description,
                         location: row.location,
                         id: row.id,
+                        date: row.date,
                         likes: row.likes,
                         datetime_added: row.datetime_added
                     };
@@ -81,6 +82,8 @@ async function addEvent(req, db = mariadb) {
         location: req.body.location,
         id: mockEvents.events.length + 1,
         likes: 0,
+        date: req.body.date,
+        time: req.body.time,
         datetime_added: new Date().toUTCString()
     }
     const sql = 'INSERT INTO events (title, description, location) VALUES (?,?,?);';
