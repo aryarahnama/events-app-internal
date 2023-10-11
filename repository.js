@@ -27,8 +27,8 @@ async function getConnection(db) {
 // mock events data - Once deployed the data will come from database
 const mockEvents = {
     events: [
-        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, date: '2022-02-01', stime: "12:04", etime: "12:34", datetime_added: '2022-02-01:12:00' },
-        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, date: '2022-02-03', stime: "11:11", etime: "11:41", datetime_added: '2022-02-01:12:00' },
+        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, date: '2022-02-01', stime: "12:04", etime: "12:34", image: "https://www.foodandwine.com/thmb/Wd4lBRZz3X_8qBr69UOu2m7I2iw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg", datetime_added: '2022-02-01:12:00' },
+        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, date: '2022-02-03', stime: "11:11", etime: "11:41", image: "https://www.recipetineats.com/wp-content/uploads/2023/05/Garlic-cheese-pizza_9.jpg", datetime_added: '2022-02-01:12:00' },
     ]
 };
 
@@ -51,6 +51,7 @@ async function getEvents(db = mariadb) {
                         date: row.date,
                         stime: row.stime,
                         etime: row.etime,
+                        image: row.image,
                         likes: row.likes,
                         datetime_added: row.datetime_added
                     };
@@ -87,6 +88,7 @@ async function addEvent(req, db = mariadb) {
         date: req.body.date,
         stime: req.body.stime,
         etime: req.body.etime,
+        image: req.body.image,
         datetime_added: new Date().toUTCString()
     }
     const sql = 'INSERT INTO events (title, description, location) VALUES (?,?,?);';
