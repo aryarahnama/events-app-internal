@@ -1,12 +1,26 @@
 function toStandardTime(militaryTime) {
     digits = militaryTime.split(':').map(e => Number(e));
     suffix = "am";
-    if (digits[0] > 12) {
-        digits[0] -= 12;
-        suffix = "pm"
-    } 
 
-    return digits.join(':') + suffix;
+    if(digits[0] == 0) {
+        digits[0] = 12
+    } else if (digits[0] > 12) {
+        digits[0] -= 12;
+        suffix = "pm";
+    } else if(digits[0] == 12) {
+        suffix = "pm";
+    }
+
+    hours = String(digits[0]);
+    minutes = String(digits[1]);
+
+    if (digits[1] < 10) {
+        minutes = '0' + minutes;
+    }
+
+    timeslots = [hours, minutes];
+
+    return timeslots.join(':') + suffix;
 }
   
   // Going to connect to MySQL database
