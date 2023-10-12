@@ -1,4 +1,15 @@
-// Going to connect to MySQL database
+function toStandardTime(militaryTime) {
+    digits = militaryTime.split(':').map(e => Number(e));
+    suffix = "am";
+    if (digits[0] > 12) {
+        digits[0] -= 12;
+        suffix = "pm"
+    } 
+
+    return digits.join(':') + suffix;
+}
+  
+  // Going to connect to MySQL database
 const mariadb = require('mariadb');
 
 const HOST = process.env.DBHOST ? process.env.DBHOST : "localhost";
@@ -86,8 +97,8 @@ async function addEvent(req, db = mariadb) {
         id: mockEvents.events.length + 1,
         likes: 0,
         date: req.body.date,
-        stime: req.body.stime,
-        etime: req.body.etime,
+        stime: toStandardTime(req.body.stime),
+        etime: toStandardTime(req.body.etime),
         image: req.body.image,
         datetime_added: new Date().toUTCString()
     }
