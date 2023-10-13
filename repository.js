@@ -1,4 +1,29 @@
-// Going to connect to MySQL database
+function toStandardTime(militaryTime) {
+    digits = militaryTime.split(':').map(e => Number(e));
+    suffix = "am";
+
+    if(digits[0] == 0) {
+        digits[0] = 12
+    } else if (digits[0] > 12) {
+        digits[0] -= 12;
+        suffix = "pm";
+    } else if(digits[0] == 12) {
+        suffix = "pm";
+    }
+
+    hours = String(digits[0]);
+    minutes = String(digits[1]);
+
+    if (digits[1] < 10) {
+        minutes = '0' + minutes;
+    }
+
+    timeslots = [hours, minutes];
+
+    return timeslots.join(':') + suffix;
+}
+  
+  // Going to connect to MySQL database
 const mariadb = require('mariadb');
 
 const HOST = process.env.DBHOST ? process.env.DBHOST : "localhost";
@@ -27,8 +52,8 @@ async function getConnection(db) {
 // mock events data - Once deployed the data will come from database
 const mockEvents = {
     events: [
-        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, datetime_added: '2022-02-01:12:00' },
-        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, datetime_added: '2022-02-01:12:00' },
+        { id: 1, title: 'a mock event', description: 'something really cool', location: 'Chez Joe Pizza', likes: 0, date: '2022-02-01', stime: "12:04pm", etime: "12:34pm", image: "https://www.foodandwine.com/thmb/Wd4lBRZz3X_8qBr69UOu2m7I2iw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg", datetime_added: '2022-02-01:12:00' },
+        { id: 2, title: 'another mock event', description: 'something even cooler', location: 'Chez John Pizza', likes: 0, date: '2022-02-03', stime: "11:11am", etime: "11:41am", image: "https://www.recipetineats.com/wp-content/uploads/2023/05/Garlic-cheese-pizza_9.jpg", datetime_added: '2022-02-01:12:00' },
     ]
 };
 
@@ -48,6 +73,10 @@ async function getEvents(db = mariadb) {
                         description: row.description,
                         location: row.location,
                         id: row.id,
+                        date: row.date,
+                        stime: row.stime,
+                        etime: row.etime,
+                        image: row.image,
                         likes: row.likes,
                         datetime_added: row.datetime_added
                     };
@@ -81,6 +110,10 @@ async function addEvent(req, db = mariadb) {
         location: req.body.location,
         id: mockEvents.events.length + 1,
         likes: 0,
+        date: req.body.date,
+        stime: toStandardTime(req.body.stime),
+        etime: toStandardTime(req.body.etime),
+        image: req.body.image,
         datetime_added: new Date().toUTCString()
     }
     const sql = 'INSERT INTO events (title, description, location) VALUES (?,?,?);';
